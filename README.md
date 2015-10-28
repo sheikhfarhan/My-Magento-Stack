@@ -19,7 +19,7 @@ Server Timezone Configured
 
 SSH Port 22 Deny
 
-Open SSH Port @ xxxx
+SSH Port @ xxxx
 
 SSH Root Log-In Disabled
 
@@ -33,6 +33,8 @@ Logrotate settings to housekeep our log files
 
 Creating Back-Up Scripts and Crons to auto-backup and auto-send to AWS S3 Bucket
 
-Opcache and Opcache GUI set-up with Password Protect URL
+PhpMyAdmin installed in subdomain (password protected)
+
+Zend Opcache COnfigured with Opcache GUI installed in subdomain (password protected)
 
 Redis with Multiple Instances
