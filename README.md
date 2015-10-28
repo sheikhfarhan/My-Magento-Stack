@@ -1,5 +1,5 @@
-### My Magento Stack ###
-## Author: Sheikh Farhan ##
+#### My Magento Stack ###
+
 
 VPS Provider:</break>
 * Company: Linode
