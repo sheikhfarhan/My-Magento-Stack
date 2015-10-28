@@ -35,6 +35,6 @@ Creating Back-Up Scripts and Crons to auto-backup and auto-send to AWS S3 Bucket
 
 PhpMyAdmin installed in subdomain (password protected)
 
-Zend Opcache COnfigured with Opcache GUI installed in subdomain (password protected)
+Zend Opcache Configured with Opcache GUI installed in subdomain (password protected)
 
 Redis with Multiple Instances
