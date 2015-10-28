@@ -1,40 +1,81 @@
-# lemp_stack_configs
-# svr3
+### My Magento Stack ###
+## Author: Sheikh Farhan ##
 
-LEMP STACK (19 Oct 2015) - v2.0
+VPS Provider:</break>
+* Company: Linode
+* Virtualization Platform: KVM
+* DataCentre: Singapore
 
-Linux
+Specs:
+* 4GB RAM
+* 4 x vCPU Core
+* 96 GB SSD Storage
+* 4 TB Transfer
+* 40 Gbit Network In
+* 500 Mbit Network Out
 
-Nginx 1.9.x
+* IP Address: <>
+* SSH Keys: <> <> <>
+* Users: <> <> <>
 
-Mariadb 10.1
+Stack:
+* Linux - Ubuntu 14.04 LTS
+* PHP 5.6
+* Nginx 1.9.x
+* PHP-FPM/FastCGI
+* Zend-Opcache
+* Mariadb 10.1 with Custom Configured my.cnf
+* Database Web Tool: PhpMyAdmin (password protected)
+* Opcache GUI
 
-PHP5.6 - PHP-FPM
+Security:
+* Disable Root Access
+* Passwordless Log-In / SSH Keys Authentications
+* SSH Port Changed to: <>
+* Firewall Configuration: UFW & Fail2ban
 
-Firewall - UFW and Fail2Ban
+Emails Infrastructure Set-Up:
+* Zoho Mail for Domain Email Addresses (SPF and Domain Keys verified)
+* SendGrid for Transactional Emails (SPF, Domain Keys and Whitelissted)
 
-Others:
+Daily Backup Scripts for:
+* Website and Database Auto-Transferred to S3 Bucket
 
-Server Timezone Configured
+DNS Set-up:
+* Staging and Data subdomain
+* CNAME - mail
 
-SSH Port 22 Deny
+Remote Storage:
+* s3cmd installed for AWS S3 Account
 
-SSH Port @ xxxx
+Website:
+* Magento Framework 1.9.2.1 Installed
+* Theme Installed
 
-SSH Root Log-In Disabled
+Dev Tools/Extensions/Optimisations Installed:
+* IDE by Koding.com
+* Modman
+* n98-magerun
+* AOE Scheduler
+* SMTP Pro Extension by Ashroder
 
-SSH Auth Keys only
+Redis Manager (in sleeping mode for now - to test pre-prodcution)
+* Seperate Redis Servers - 2 different ports for:
+* System/Data (cm_redis_backend) and
+* Sessions (cm_redis_session)
+* Third port for FPC maybe?
 
-Sudo User: Gandalf
+Snapshots Disks/Stack at Linode
 
-Set-Up IDE @ Koding.com
-
-Logrotate settings to housekeep our log files
-
-Creating Back-Up Scripts and Crons to auto-backup and auto-send to AWS S3 Bucket
-
-PhpMyAdmin installed in subdomain (password protected)
-
-Zend Opcache Configured with Opcache GUI installed in subdomain (password protected)
-
-Redis with Multiple Instances
+Once the categories and sample products are up:
+* Proxy Cache (or maybe Varnish?)
+* Browser Caching/Expire Headers
+* Activate Google Pagespeed
+* Minify js and css
+* Merge scripts
+* Optimize Images using Kraken, JpegOptim + Optipng or if not at linux level, using GIMP
+* SSL Certificate
+* Load Balancer
+* CDN Set-Up (DIY or maybe Cloundfront or MaxCDN?)
+* Load test - Siege and ab testing
+* Server Monitoring Tools - New Relic, Munin etc..
