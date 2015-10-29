@@ -1,4 +1,4 @@
-#### My Magento Stack ###
+#### My LEMP Stack for Magento ###
 
 
 VPS Provider:</break>
@@ -49,7 +49,7 @@ Remote Storage:
 * s3cmd installed for AWS S3 Account
 
 Website:
-* Magento Framework 1.9.2.1 Installed
+* Magento Framework 1.9.2.2 Installed
 * Theme Installed
 
 Dev Tools/Extensions/Optimisations Installed:
