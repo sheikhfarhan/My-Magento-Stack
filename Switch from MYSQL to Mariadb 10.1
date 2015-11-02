@@ -1,0 +1,83 @@
+# Installation of Mariadb 10.1 and Configuration of my.cnf
+# Version: 4.1
+# Author: Sheikh Farhan
+# Date: 30 Aug 2015
+
+# Steps for Switching from Mysql 5.5 to Mariadb 10.1 - https://mariadb.org/en/about/
+
+$ service mysql stop
+$ apt-get --purge remove mysql-client mysql-server mysql-common
+$ apt-get autoremove
+$ apt-get autoclean
+
+Delete content of /etc/mysql/
+$ cd /etc/mysql
+$rm -rf *
+
+Prepare Mariadb Repo:
+$ apt-get install software-properties-common
+$ apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
+
+Add Mariadb’s Repo to the source list:
+$ nano /etc/apt/sources.list
+
+# MariaDB 10.1 repository list - created 2015-09-22 06:14 UTC
+# http://mariadb.org/mariadb/repositories/
+deb http://download.nus.edu.sg/mirror/mariadb/repo/10.1/ubuntu trusty main
+deb-src http://download.nus.edu.sg/mirror/mariadb/repo/10.1/ubuntu trusty main
+
+Pinning of Maridb packages:
+$ touch /etc/apt/preferences.d/00mariadb.pref
+
+Add to the new file:
+Package: *
+Pin: origin download.nus.edu.sg
+Pin-Priority: 1001
+
+Install Mariadb 10.1:
+$ apt-get update && apt-get upgrade
+$ apt-get install mariadb-server
+
+At password prompt, enter new root mysql password.
+
+After Installation complete:
+$ service mysql restart
+$ mysql_secure_installation
+
+Go to /root/.my.cnf to change password
+
+Optimizing my.cnf
+
+Steps:
+$ service mysql stop
+
+Navigate to:
+$ cd /etc/mysql
+$ vim my.cnf
+:1,$d to remove all contents of the file
+
+Input new my.cnf codes
+Eg: link: https://github.com/sheikhfarhan/lemp_stack_configs/blob/master/etc/mysql/my.cnf
+
+IMPORTANT: 
+Before activating the change for ‘ innodb_log_file_size’ variable:
+
+At /var/lib/mysql:
+$ ls -l
+chown mysql:mysql debian-10.1.flag
+rm -rf ib_logfile0
+rm -rf ib_logfile1 
+rm -rf debian-5.5.flag
+
+DO NOT DELETE the file ibdata1
+
+Restart mysql
+$ service mysql restart
+
+#Troubleshooting 
+#If database created at serverpilot not showing up (Access denied):
+#remove ‘skip-name-resolve’  from my.cnf
+#make sure all files in /etc/mysql/* are chown mysql:mysql
+$ mysqladmin reload
+$ mysqladmin flush-hosts
+
