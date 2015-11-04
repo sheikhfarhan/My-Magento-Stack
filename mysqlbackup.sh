@@ -1,54 +1,32 @@
 #!/bin/sh
-#Purpose = Backup of Database
-#Created on 03-11-2015
+#Purpose = Backup of Database 
+#Created = 04-11-2015
 #Author = Sheikh Farhan
-#Version 5.0
+#Version = 2.0
 
-## Create and Place this file in /home/path/under/user
-## Run a cronjob under user not root!
-## automatic daily / weekly / monthly backup to S3 at 0415 daily
+## Place this file in /home/path/under/user
+## automatic daily / weekly / monthly backup to S3.
+## Add the line below to cronjob (user not root!) for a 4.15am daily run
 ## 15 4 * * * sh mysqlbackup.sh auto
 
 DATESTAMP=$(date +"%d.%m.%Y-%H%M")
 DAY=$(date +"%d")
 DAYOFWEEK=$(date +"%A")
 
-# Variables #
+#MYSQLROOT=root
+#MYSQLPASS=password
 
-#MYSQLROOT= # use =root if want to backup all
-#MYSQLPASS= # if use =root above, then can leave this empty, as password is saved at ~/.my.cnf file
+S3BUCKET=svr3backups
 
-DATABASE=	'db01'  # use '--all-databases' if want to backup all
-FILENAME=	mysql-${DATESTAMP}
-DESDIR=		/home/gandalf/backup
+FILENAME='mysql-'
 
-# Name of our S3 Buckets
-
-S3BUCKET=	svr3backups
-
-# the following line prefixes the backups with the defined directory. 
-#it must be blank or end with a /
-
-S3PATH=mysql/
-
-# when running via cron, the PATHs MIGHT be different. 
-#If have a custom/manual MYSQL install, to set this manually like MYSQLDUMPPATH=/usr/local/mysql/bin/
-#MYSQLDUMPPATH=
-
-echo "Starting backing up the database to a file..."
-
-# dump database
-${MYSQLDUMPPATH}mysqldump --skip-opt --single-transaction --quick ${DATABASE} > ${DESDIR}/${FILENAME}.sql
-
-echo "Done backing up the database to a file."
-
-echo "Starting compression..."
-
-gzip -9 ${DESDIR}/${FILENAME}.sql
-
-echo "Done compressing the backup file."
-
-# Configure Period
+DATABASE='db01'
+# the following line prefixes the backups with the defined directory. it must be blank or end with a /
+S3PATH=mysql_backup/
+# when running via cron, the PATHs MIGHT be different. If you have a custom/manual MYSQL install, you should set this manually like MYSQLDUMPPATH=/usr/local/mysql/bin/
+MYSQLDUMPPATH=
+# Destination Directory
+DESDIR=~/backup/mysql/
 
 PERIOD=${1-day}
 if [ ${PERIOD} = "auto" ]; then
@@ -63,6 +41,18 @@ fi
 
 echo "Selected period: $PERIOD."
 
+echo "Starting backing up the database to a file..."
+
+# dump database
+${MYSQLDUMPPATH}mysqldump --skip-opt --single-transaction --quick ${DATABASE} > ${DESDIR}${FILENAME}${DATESTAMP}.sql
+
+echo "Done backing up the database to a file."
+echo "Starting compression..."
+
+tar czf ${DESDIR}${FILENAME}${DATESTAMP}.tar.gz ${DESDIR}${FILENAME}${DATESTAMP}.sql
+
+echo "Done compressing the backup file."
+
 # we want at least two backups, two months, two weeks, and two days
 echo "Removing old backup (2 ${PERIOD}s ago)..."
 s3cmd del --recursive s3://${S3BUCKET}/${S3PATH}previous_${PERIOD}/
@@ -72,17 +62,15 @@ echo "Moving the backup from past $PERIOD to another folder..."
 s3cmd mv --recursive s3://${S3BUCKET}/${S3PATH}${PERIOD}/ s3://${S3BUCKET}/${S3PATH}previous_${PERIOD}/
 echo "Past backup moved."
 
-# upload all databases to S3
+# upload all databases
 echo "Uploading the new backup..."
-s3cmd put -f ${DESDIR}/${FILENAME}.sql.gz s3://${S3BUCKET}/${S3PATH}${PERIOD}/
+s3cmd put -f ${TMP_PATH}${FILENAME}${DATESTAMP}.tar.gz s3://${S3BUCKET}/${S3PATH}${PERIOD}/
 echo "New backup uploaded."
 
 echo "Removing the cache files..."
-
-#Comment below if we wish to keep backups on server
-# To remove databases dump
-
-rm ${DESDIR}/${FILENAME}.sql.gz
+# remove databases dump
+#Uncomment below if we do not want to keep any files on our server
+#rm ${DESDIR}${FILENAME}${DATESTAMP}.sql
+#rm ${DESDIR}${FILENAME}${DATESTAMP}.tar.gz
 echo "Files removed."
 echo "All done."
-
