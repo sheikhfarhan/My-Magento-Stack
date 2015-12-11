@@ -1,0 +1,20 @@
+### IMPROVE SYSTEM MEMORY MANAGEMENT ###
+
+# Increase size of file handles and inode cache
+fs.file-max = 2097152
+
+# Do less swapping
+vm.swappiness = 10
+vm.dirty_ratio = 60
+vm.dirty_background_ratio = 2
+
+# Get System to reboot after 10secs upon OOM
+vm.panic_on_oom=1
+kernel.panic=10
+
+### GENERAL NETWORK SECURITY OPTIONS ###
+net.core.wmem_max=12582912
+net.core.rmem_max=12582912
+net.ipv4.tcp_rmem= 10240 87380 12582912
+net.ipv4.tcp_wmem= 10240 87380 12582912
+
